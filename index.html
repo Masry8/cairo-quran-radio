@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cairo Quran Kareem Radio</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <h1>Cairo Quran Kareem Radio</h1>
+    <audio id="radio" controls autoplay>
+        <source src="https://stream.radiojar.com/8s5u5tpdtwzuv" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    <div>
+        <label for="volumeControl">Volume:</label>
+        <input type="range" id="volumeControl" min="0" max="1" step="0.01" value="1">
+    </div>
+    <button id="muteButton"><i class="fas fa-volume-mute"></i></button>
+    <button id="recordButton"><i class="fas fa-record-vinyl"></i></button>
+    <button id="delayButton"><i class="fas fa-clock"></i></button>
+    <a id="downloadLink" style="display: none;">Download Recording</a>
+    <script src="script.js"></script>
+</body>
+</html>
