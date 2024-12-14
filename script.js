@@ -1,69 +1,52 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const audioPlayer = document.getElementById('radio');
-    const volumeControl = document.getElementById('volumeControl');
-    const muteButton = document.getElementById('muteButton');
-    const recordButton = document.getElementById('recordButton');
-    const downloadLink = document.getElementById('downloadLink');
+let mediaRecorder;
+let recordedChunks = [];
 
-    // Attempt to play the audio automatically
-    audioPlayer.play().catch(error => {
-        console.log('Autoplay was prevented:', error);
-    });
+document.getElementById('recordButton').addEventListener('click', function() {
+    if (mediaRecorder && mediaRecorder.state === 'recording') {
+        mediaRecorder.stop();
+        alert('Recording stopped!');
+    } else {
+        navigator.mediaDevices.getUserMedia({ audio: true })
+            .then(stream => {
+                mediaRecorder = new MediaRecorder(stream);
+                recordedChunks = []; // Clear previous recordings
 
-    volumeControl.addEventListener('input', function() {
-        audioPlayer.volume = volumeControl.value;
-    });
+                mediaRecorder.ondataavailable = function(event) {
+                    if (event.data.size > 0) {
+                        recordedChunks.push(event.data);
+                    }
+                };
 
-    muteButton.addEventListener('click', function() {
-        if (audioPlayer.muted) {
-            audioPlayer.muted = false;
-            muteButton.innerHTML = '<i class="fas fa-volume-mute"></i>';
-        } else {
-            audioPlayer.muted = true;
-            muteButton.innerHTML = '<i class="fas fa-volume-up"></i>';
-        }
-    });
+                mediaRecorder.onstop = function() {
+                    const blob = new Blob(recordedChunks, { type: 'audio/webm' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = 'recording.webm';
+                    document.body.appendChild(a);
+                    a.click();
+                    URL.revokeObjectURL(url);
+                };
 
-    // Recording functionality
-    let mediaRecorder;
-    let recordedChunks = [];
+                mediaRecorder.start();
+                alert('Recording started!');
+            })
+            .catch(error => console.error('Error accessing media devices.', error));
+    }
+});
 
-    recordButton.addEventListener('click', function() {
-        if (mediaRecorder && mediaRecorder.state === 'recording') {
-            mediaRecorder.stop();
-            recordButton.innerHTML = '<i class="fas fa-record-vinyl"></i>';
-        } else {
-            navigator.mediaDevices.getUserMedia({ audio: true })
-                .then(stream => {
-                    mediaRecorder = new MediaRecorder(stream);
-                    mediaRecorder.ondataavailable = function(event) {
-                        if (event.data.size > 0) {
-                            recordedChunks.push(event.data);
-                        }
-                    };
-                    mediaRecorder.onstop = function() {
-                        const blob = new Blob(recordedChunks, { type: 'audio/mpeg' });
-                        const url = URL.createObjectURL(blob);
-                        downloadLink.href = url;
-                        downloadLink.download = 'recording.mp3';
-                        downloadLink.style.display = 'block';
-                        recordedChunks = [];
-                    };
-                    mediaRecorder.start();
-                    recordButton.innerHTML = '<i class="fas fa-stop"></i>';
-                })
-                .catch(error => {
-                    console.error('Error accessing media devices.', error);
-                });
-        }
-    });
+document.getElementById('stopButton').addEventListener('click', function() {
+    const radio = document.getElementById('radio');
+    radio.pause();
+    radio.currentTime = 0;
+});
 
-    document.getElementById('delayButton').addEventListener('click', function() {
-        // Delay functionality
-        const currentTime = new Date().getTime();
-        const delayTime = 6 * 60 * 60 * 1000; // 6 hours in milliseconds
-        const newTime = new Date(currentTime + delayTime);
-        alert('Stream delayed by 6 hours!');
-        // Implement actual delay logic here
-    });
+document.getElementById('delayButton').addEventListener('click', function() {
+    const radio = document.getElementById('radio');
+    const currentTime = new Date().getTime();
+    const delayTime = 6 * 60 * 60 * 1000; // 6 hours in milliseconds
+    const newTime = new Date(currentTime + delayTime);
+    alert('Stream delayed by 6 hours!');
+    // Implement actual delay logic here
 });

@@ -6,25 +6,29 @@ body {
 
 button {
     margin: 10px;
-    padding: 10px;
+    padding: 10px 20px;
     font-size: 16px;
     border: none;
-    border-radius: 50%;
-    background-color: #007BFF;
+    border-radius: 5px;
+    background-color: #4CAF50;
     color: white;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s ease;
 }
 
 button:hover {
-    background-color: #0056b3;
+    background-color: #45a049;
 }
 
-button i {
-    font-size: 24px;
+button:active {
+    background-color: #3e8e41;
 }
 
-#volumeControl {
-    width: 300px;
-    margin: 20px;
+/* Specific style for the recording button */
+#recordButton {
+    background-color: red;
+}
+
+#recordButton:hover {
+    background-color: darkred;
 }
