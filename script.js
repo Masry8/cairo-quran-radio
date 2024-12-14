@@ -1,3 +1,25 @@
+document.addEventListener('DOMContentLoaded', function() {
+    const audioPlayer = document.getElementById('radio');
+
+    // Attempt to play the audio when the page loads
+    audioPlayer.play().catch(error => {
+        console.error('Autoplay failed:', error);
+    });
+
+    // Ensure the audio starts playing when it is ready
+    audioPlayer.addEventListener('canplay', function() {
+        audioPlayer.play().catch(error => {
+            console.error('Play attempt failed:', error);
+        });
+    });
+});
+
+document.getElementById('stopButton').addEventListener('click', function() {
+    const radio = document.getElementById('radio');
+    radio.pause();
+    radio.currentTime = 0;
+});
+
 let mediaRecorder;
 let recordedChunks = [];
 
@@ -34,19 +56,4 @@ document.getElementById('recordButton').addEventListener('click', function() {
             })
             .catch(error => console.error('Error accessing media devices.', error));
     }
-});
-
-document.getElementById('stopButton').addEventListener('click', function() {
-    const radio = document.getElementById('radio');
-    radio.pause();
-    radio.currentTime = 0;
-});
-
-document.getElementById('delayButton').addEventListener('click', function() {
-    const radio = document.getElementById('radio');
-    const currentTime = new Date().getTime();
-    const delayTime = 6 * 60 * 60 * 1000; // 6 hours in milliseconds
-    const newTime = new Date(currentTime + delayTime);
-    alert('Stream delayed by 6 hours!');
-    // Implement actual delay logic here
 });
